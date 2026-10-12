@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Case study: a half-day virtual Excel Intermediate training built around XLOOKUP, SUMIF/COUNTIF, Pivot Tables and dashboards, using Gagné’s Nine Events of Instruction.">
+<title>Excel Intermediate: From Formulas to a Turnover Dashboard | Zeina Abualkasem</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2312324D'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='700' text-anchor='middle' fill='%23FFFFFF'%3EZ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>document.documentElement.className+=' js';</script>
+<style>
+:root{
+  --navy:#12324D; --navy-deep:#0B2237;
+  --accent:#2A6A8F; --accent-hover:#1F5573;
+  --pearl:#F6FAFD; --white:#FFFFFF; --tint:#E6F0F7;
+  --baby:#A7C5D9; --baby-soft:#D6E8F3;
+  --body:#33475B; --muted:#52667A; --line:#D3E2EC;
+  --ph-ink:#3E566C; --ph-line:#6B8399; --ph-bg:#EAF1F7; --ph-bg2:#E1EBF3;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --font-mark:'Cinzel',Georgia,'Times New Roman',serif;
+  --r:2px; --wrap:1160px; --pad:clamp(20px,5vw,48px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{color-scheme:light;background:#FFFFFF;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);font-size:1.0625rem;line-height:1.65;color:var(--body);background:#FFFFFF;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%;display:block}
+a{color:var(--accent)}
+a:hover{color:var(--accent-hover)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.on-dark :focus-visible,.bg-navy :focus-visible{outline-color:var(--baby)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-60px;background:var(--navy);color:#fff;padding:10px 16px;z-index:100;border-radius:var(--r);text-decoration:none}
+.skip:focus{top:12px}
+
+h1,h2,h3,h4{color:var(--navy);font-weight:700;letter-spacing:-.02em;line-height:1.12}
+h1{font-size:clamp(2.25rem,5vw,3.75rem);letter-spacing:-.03em;line-height:1.05}
+h2{font-size:clamp(1.75rem,3.2vw,2.5rem)}
+h3{font-size:1.25rem;line-height:1.25}
+p{max-width:64ch}
+.bg-navy h1,.bg-navy h2,.bg-navy h3{color:#FFFFFF}
+.bg-navy p{color:var(--baby-soft)}
+
+.container{width:100%;max-width:calc(var(--wrap) + 2*var(--pad));margin-inline:auto;padding-inline:var(--pad)}
+.section{padding-block:clamp(56px,9vw,112px)}
+.bg-white{background:#FFFFFF;color:var(--body)}
+.bg-pearl{background:var(--pearl);color:var(--body)}
+.bg-tint{background:var(--tint);color:var(--body)}
+.bg-navy{background:var(--navy);color:#FFFFFF}
+.page{background:#FFFFFF;min-height:100vh}
+.lede{font-size:clamp(1.1rem,1.6vw,1.3rem);line-height:1.55;color:var(--body)}
+.muted{color:var(--muted)}
+.label{font-size:.9rem;font-weight:600;color:var(--accent);letter-spacing:.01em;margin-bottom:12px;display:block}
+.bg-navy .label{color:var(--baby)}
+.stack>*+*{margin-top:1.1em}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 26px;border-radius:var(--r);font:600 1rem/1.2 var(--font);text-decoration:none;cursor:pointer;border:2px solid transparent;transition:background-color .18s,color .18s,border-color .18s}
+.btn-primary{background:var(--accent);color:#FFFFFF;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent-hover) !important;border-color:var(--accent-hover) !important;color:#FFFFFF !important}
+.btn-ghost{background:transparent;color:var(--accent);border-color:var(--accent)}
+.btn-ghost:hover{background:var(--accent) !important;color:#FFFFFF !important;border-color:var(--accent) !important}
+.btn-light{background:#FFFFFF;color:var(--navy);border-color:#FFFFFF}
+.btn-light:hover{background:var(--baby-soft) !important;border-color:var(--baby-soft) !important;color:var(--navy) !important}
+.btn-ghost-light{background:transparent;color:#FFFFFF;border-color:var(--baby)}
+.btn-ghost-light:hover{background:#FFFFFF !important;color:var(--navy) !important;border-color:#FFFFFF !important}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:28px}
+.btn-sm{min-height:40px;padding:8px 18px;font-size:.95rem}
+
+/* ---------- Placeholders (consistent, easy to spot) ---------- */
+.ph{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;aspect-ratio:var(--ar,4/3);padding:16px;border:2px dashed var(--ph-line);color:var(--ph-ink);font-weight:600;font-size:.95rem;line-height:1.4;
+  background:repeating-linear-gradient(135deg,var(--ph-bg) 0 14px,var(--ph-bg2) 14px 28px)}
+.ph-text{font-style:italic;color:var(--ph-ink);background:var(--ph-bg);border-bottom:1px dashed var(--ph-line);padding:1px 6px;border-radius:var(--r)}
+.ph-block{display:block;font-style:italic;color:var(--ph-ink);background:var(--ph-bg);border-left:3px dashed var(--ph-line);padding:12px 16px;border-radius:var(--r);max-width:64ch}
+.bg-tint .ph-text,.bg-tint .ph-block{background:#FFFFFF}
+.bg-navy .ph-text{background:#FFFFFF;color:var(--ph-ink)}
+
+/* ---------- Header ---------- */
+.site-header{position:sticky;top:0;z-index:50;background:#FFFFFF;border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:72px}
+.wordmark{font-family:var(--font-mark);font-weight:700;font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);text-decoration:none;white-space:nowrap}
+.wordmark:hover{color:var(--accent)}
+.site-nav ul{list-style:none;display:flex;align-items:center;gap:32px}
+.site-nav a{color:var(--body);text-decoration:none;font-weight:500;font-size:1rem;padding:8px 0;border-bottom:2px solid transparent}
+.site-nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.site-nav a[aria-current="page"]{color:var(--navy);border-bottom-color:var(--navy)}
+.site-nav a.btn{padding:8px 18px;border-bottom:2px solid var(--accent);color:var(--accent)}
+.site-nav a.btn:hover{color:#FFFFFF !important;border-bottom-color:var(--accent) !important}
+.menu-toggle{display:none;width:48px;height:48px;background:#FFFFFF;border:1.5px solid var(--line);border-radius:var(--r);cursor:pointer;align-items:center;justify-content:center;transition:background-color .18s,border-color .18s}
+.menu-toggle:hover{background:var(--tint) !important;border-color:var(--accent) !important}
+.bars{position:relative;width:22px;height:16px;display:block}
+.bars i{position:absolute;left:0;width:100%;height:2px;background:var(--navy);transition:transform .2s,opacity .2s,top .2s}
+.bars i:nth-child(1){top:0}.bars i:nth-child(2){top:7px}.bars i:nth-child(3){top:14px}
+.menu-toggle[aria-expanded="true"] .bars i:nth-child(1){top:7px;transform:rotate(45deg)}
+.menu-toggle[aria-expanded="true"] .bars i:nth-child(2){opacity:0}
+.menu-toggle[aria-expanded="true"] .bars i:nth-child(3){top:7px;transform:rotate(-45deg)}
+
+/* ---------- Hero ---------- */
+.hero{padding-block:clamp(40px,7vw,88px) clamp(48px,8vw,104px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(32px,6vw,88px);align-items:center}
+.hero h1{font-size:clamp(2.5rem,5.4vw,4.4rem);font-weight:800;letter-spacing:-.035em;line-height:1.03;max-width:18ch}
+.hero .lede{margin-top:28px;max-width:52ch}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  .rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.18s}.rise.d3{animation-delay:.28s}
+}
+
+/* ---------- Fields band ---------- */
+.fields{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(28px,6vw,88px);align-items:start}
+.field-list{list-style:none}
+.field-list li{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-top:1px solid rgba(167,197,217,.4);font-size:clamp(1.4rem,3vw,2.15rem);font-weight:600;letter-spacing:-.02em;color:#FFFFFF;line-height:1.2}
+.field-list li:last-child{border-bottom:1px solid rgba(167,197,217,.4)}
+.field-note{font-size:.9rem;font-weight:500;letter-spacing:0;color:var(--baby-soft);text-align:right;max-width:24ch}
+
+/* ---------- Featured ---------- */
+.feature{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,72px);align-items:center}
+.feature h2{margin-bottom:18px}
+.result-line{margin-top:20px;padding-left:16px;border-left:3px solid var(--accent);color:var(--navy);font-weight:600;max-width:52ch}
+
+/* ---------- Method ---------- */
+.method-head{max-width:720px;margin-bottom:clamp(32px,5vw,56px)}
+.method{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(24px,3vw,40px)}
+.method>div{border-top:3px solid var(--navy);padding-top:20px}
+.method h3{margin-bottom:10px}
+
+/* ---------- Testimonial + proof ---------- */
+.proof{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,72px);align-items:start}
+.testimonial{display:grid;grid-template-columns:120px minmax(0,1fr);gap:clamp(20px,4vw,40px);align-items:start}
+.testimonial .ph{--ar:1/1;border-radius:50%;padding:8px;font-size:.8rem}
+.quote{font-size:clamp(1.25rem,2.4vw,1.75rem);line-height:1.4;color:var(--navy);font-weight:500;letter-spacing:-.01em;max-width:34em}
+.attrib{margin-top:20px;font-size:.95rem;color:var(--muted)}
+.proof-fact{background:#FFFFFF;border-top:3px solid var(--navy);padding:28px}
+.fact-big{font-size:clamp(1.4rem,2.4vw,1.85rem);font-weight:700;color:var(--navy);letter-spacing:-.02em;line-height:1.2;margin-bottom:10px}
+
+/* ---------- About ---------- */
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,6vw,88px);align-items:center}
+.split .ph{--ar:4/5}
+
+/* ---------- Contact CTA ---------- */
+.cta h2{max-width:20ch}
+.cta p{margin-top:16px}
+
+/* ---------- Page headers (inner pages) ---------- */
+.page-head{padding-block:clamp(48px,8vw,96px) clamp(32px,5vw,56px)}
+.page-head p{margin-top:20px}
+
+/* ---------- Work page ---------- */
+.rows{list-style:none;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr) auto;gap:clamp(20px,4vw,48px);align-items:center;padding-block:28px;border-bottom:1px solid var(--line)}
+.row .ph{--ar:4/3}
+.row h3{margin-bottom:6px}
+.status{font-size:.9rem;color:var(--muted);font-weight:500;white-space:nowrap}
+.samples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,40px)}
+.sample{background:#FFFFFF;border:1px solid var(--line);border-top:3px solid var(--navy);padding:28px;display:flex;flex-direction:column;gap:12px}
+.sample .btn{align-self:flex-start;margin-top:8px}
+
+/* ---------- About page ---------- */
+.timeline{list-style:none;border-top:1px solid var(--line)}
+.timeline>li{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:clamp(16px,4vw,48px);padding-block:28px;border-bottom:1px solid var(--line)}
+.when{font-weight:600;color:var(--navy)}
+.timeline ul{margin-top:12px;padding-left:1.2em}
+.timeline li li{margin-top:6px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,64px)}
+.group+.group{margin-top:28px}
+.group h3{margin-bottom:8px}
+.tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.tags li{border:1px solid var(--line);background:#FFFFFF;color:var(--body);font-size:.92rem;padding:5px 12px;border-radius:var(--r)}
+
+/* ---------- Contact page ---------- */
+.contact-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,6vw,88px)}
+.contact-list{list-style:none;border-top:1px solid var(--line)}
+.contact-list li{padding:18px 0;border-bottom:1px solid var(--line)}
+.contact-list b{display:block;color:var(--navy);margin-bottom:2px}
+
+/* ---------- Project write-up ---------- */
+.proj-hero{padding-top:0}
+.proj-hero .ph{--ar:21/9;border-left:0;border-right:0;border-top:0}
+.proj-title{padding-block:clamp(36px,6vw,72px) 0}
+.crumb{font-size:.95rem;margin-bottom:20px;display:inline-block}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 40px;margin-top:40px;padding-top:28px;border-top:1px solid var(--line)}
+.facts dt{font-size:.9rem;color:var(--muted);font-weight:500}
+.facts dd{color:var(--navy);font-weight:600;margin-top:2px}
+.prose{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(20px,5vw,72px)}
+.prose h2{font-size:clamp(1.6rem,2.6vw,2.1rem)}
+.steps{list-style:none}
+.step{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,72px);align-items:center;padding-block:clamp(28px,4vw,48px);border-top:1px solid var(--line)}
+.step:last-child{border-bottom:1px solid var(--line)}
+.step-no{font-size:2.5rem;font-weight:800;color:var(--accent);letter-spacing:-.03em;line-height:1;margin-bottom:12px}
+.step h3{margin-bottom:10px}
+.step .ph{--ar:16/10}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px}
+.metric{border-left:3px solid var(--accent);padding-left:18px}
+.metric .big{font-size:2rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.1}
+.takeaways{margin-top:28px;padding-left:1.2em}
+.takeaways li{margin-top:10px;max-width:60ch}
+
+/* ---------- Footer ---------- */
+.site-footer{background:var(--navy);color:#FFFFFF;padding-block:clamp(40px,6vw,64px) 32px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+.foot{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:clamp(24px,6vw,80px);align-items:start}
+.site-footer .wordmark{color:#FFFFFF}
+.site-footer .wordmark:hover{color:var(--baby-soft)}
+.site-footer ul{list-style:none;display:grid;gap:8px}
+.site-footer a:not(.wordmark){color:var(--baby-soft);text-decoration:none}
+.site-footer a:not(.wordmark):hover{color:#FFFFFF;text-decoration:underline}
+.foot h2{font-size:1rem;color:#FFFFFF;letter-spacing:0;margin-bottom:12px}
+.legal{margin-top:40px;padding-top:20px;border-top:1px solid rgba(167,197,217,.35);font-size:.9rem;color:var(--baby-soft)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1100px){
+  .method{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .hero-grid,.feature,.fields,.split,.contact-grid,.prose,.step,.proof{grid-template-columns:minmax(0,1fr)}
+  .hero h1{max-width:20ch}
+  .hero .ph{--ar:16/10 !important}
+  .method,.metrics,.facts{grid-template-columns:minmax(0,1fr)}
+  .samples,.cols{grid-template-columns:minmax(0,1fr)}
+  .row{grid-template-columns:minmax(0,1fr)}
+  .row .ph{max-width:360px}
+  .timeline>li{grid-template-columns:minmax(0,1fr);gap:8px}
+  .foot{grid-template-columns:minmax(0,1fr)}
+  .split .ph{--ar:16/10}
+  .feature .ph{--ar:16/10 !important}
+}
+@media (max-width:820px){
+  .js .menu-toggle{display:inline-flex}
+  .site-header{position:sticky}
+  .bar{flex-wrap:wrap;position:relative}
+  .site-nav{width:100%;order:3}
+  .js .site-nav{display:none;position:absolute;left:0;right:0;top:100%;width:auto;background:#FFFFFF;border-bottom:1px solid var(--line);padding:8px var(--pad) 20px}
+  .js .site-nav.open{display:block}
+  .site-nav ul{flex-direction:column;align-items:stretch;gap:0}
+  .site-nav li{border-top:1px solid var(--line)}
+  .site-nav li:first-child{border-top:0}
+  .site-nav a{display:block;padding:14px 0;border-bottom:0}
+  .site-nav a.btn{display:inline-flex;margin-top:14px;padding:10px 20px}
+  .wordmark{font-size:.95rem;letter-spacing:.1em}
+}
+@media (max-width:560px){
+  body{font-size:1rem}
+  .testimonial{grid-template-columns:minmax(0,1fr)}
+  .testimonial .ph{width:96px;--ar:1/1}
+  .field-list li{flex-direction:column;gap:4px}
+  .field-note{text-align:left;max-width:none}
+  .btn{width:100%}
+  .btn-row{flex-direction:column;align-items:stretch}
+  .site-nav a.btn{width:auto}
+  .sample .btn{align-self:stretch}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container bar">
+    <!-- LOGO PLACEHOLDER: this text wordmark stands in for your logo file. Swap in an <img> when you have one. -->
+    <a class="wordmark" href="index.html" aria-label="Zeina Abualkasem, home">Zeina Abualkasem</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="sr">Open menu</span><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></button>
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="work.html" aria-current="page">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="resume.pdf" target="_blank" rel="noopener">Résumé</a></li>
+        <li><a class="btn btn-ghost" href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="proj-hero bg-white">
+  <img src="assets/p2-hero-banner.jpg" alt="Excel Intermediate Training: XLOOKUP, SUMIF/COUNTIF, Pivot Tables, Dashboards — virtual, MS Teams, built on Gagné's Nine Events, half-day workshop" style="width:100%;aspect-ratio:21/9;object-fit:cover;display:block">
+</section>
+
+<section class="proj-title bg-white">
+  <div class="container">
+    <a class="crumb" href="work.html">Back to all work</a>
+    <span class="label">Excel Intermediate Training</span>
+    <h1 style="max-width:24ch">From formulas to a Q1 turnover dashboard</h1>
+    <p class="lede" style="margin-top:24px;max-width:60ch">A half-day virtual workshop that takes learners from looking up a single value to building a dashboard their manager can read in five seconds &mdash; built around a real HR turnover dataset, with a pre- and post-assessment designed to prove the transfer, not just the recall.</p>
+    <div class="btn-row"><a class="btn btn-primary" href="#process-h">See how I designed it</a></div>
+    <dl class="facts">
+      <div><dt>Role</dt><dd>Instructional designer &amp; facilitator</dd></div>
+      <div><dt>Audience</dt><dd>PO specialists and operations team leaders</dd></div>
+      <div><dt>My background in the field</dt><dd>Built on an existing Excel and analytics background</dd></div>
+      <div><dt>Client</dt><dd>An international BPO group managing marketing and other services for several client brands</dd></div>
+      <div><dt>Timeline</dt><dd>TNA: December 2025. Workshop delivered: September 2026.</dd></div>
+      <div><dt>Format and tools</dt><dd>Virtual, instructor-led (MS Teams). Half day, about 3.5 hours including a break. Built on Gagné's Nine Events of Instruction.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section bg-pearl" aria-labelledby="problem-h">
+  <div class="container prose">
+    <h2 id="problem-h">Problem</h2>
+    <div class="stack">
+      <p>Like the prioritization workshop, this one came out of the same company-wide training needs analysis. It flagged PO specialists and operations team leaders as spending time manually cross-referencing data across sheets and rebuilding the same reports by hand instead of working from formulas and pivot tables.</p>
+      <p>Whatever the audience's starting point, the real gap was consistent: people could read a spreadsheet, but couldn't pull a specific answer out of it quickly, and had no repeatable way to turn raw data into something a manager could act on without rebuilding it by hand every time the question changed.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-white" aria-labelledby="solution-h">
+  <div class="container prose">
+    <h2 id="solution-h">Solution</h2>
+    <div class="stack">
+      <p>A single half-day workshop built around two goals. Goal 1: build formulas to extract and analyze data accurately, using XLOOKUP to pull data across two linked sheets, and SUMIF/COUNTIF to calculate and count by condition. Goal 2: create visual reports to communicate insights clearly, using Pivot Tables, Conditional Formatting and charts &mdash; ending with learners building their own simple dashboard.</p>
+      <p>Every exercise ran on one real dataset: Q1 turnover records for 142 employees, split across two linked sheets so XLOOKUP had a genuine reason to exist, not a toy example. Each topic followed the same I Do &rarr; We Do &rarr; You Do rhythm: I build the formula live and narrate the logic, learners build the next one alongside me pausing at each argument, then they build one independently while I circulate.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-pearl" aria-labelledby="process-h">
+  <div class="container">
+    <h2 id="process-h" style="margin-bottom:32px">Process</h2>
+    <ol class="steps">
+      <li class="step">
+        <div>
+          <div class="step-no" aria-hidden="true">1</div>
+          <h3>Map the action</h3>
+          <p>Action mapping broke the goal into two measurable halves: extracting and analyzing data accurately, and communicating it visually. Each half was mapped to the specific Excel actions that would get learners there &mdash; XLOOKUP and SUMIF/COUNTIF for the first, Pivot Tables, Conditional Formatting and charts for the second &mdash; plus a practice activity for each: building a dashboard from a blended, multi-sheet dataset.</p>
+        </div>
+        <div><img src="assets/p2-action-map.jpg" alt="Real action mapping diagram for the Excel Intermediate training: two goals, formulas and visual reports, each broken into specific Excel actions and a practice activity" style="width:100%;height:auto;border-radius:2px;border:1px solid var(--line)"></div>
+      </li>
+      <li class="step">
+        <div>
+          <div class="step-no" aria-hidden="true">2</div>
+          <h3>Design the storyboard</h3>
+          <p>Built with Gagné's Nine Events of Instruction, topic by topic: gain attention with a real question the data can answer, state the objective, recall what learners already know (most already knew VLOOKUP, for instance, which made XLOOKUP a reframe rather than a cold start), demonstrate, guide practice, elicit independent performance, then give targeted feedback on the most common mistake before moving on.</p>
+          <p style="margin-top:12px">No topic opens with a slide. Every one of the six topics opens with the dataset already on screen and a question a supervisor or HR director would actually ask &mdash; "how much salary walked out the door through resignations this quarter" for SUMIF, for instance &mdash; so the formula always has a reason to exist before it's taught.</p>
+        </div>
+        <div><img src="assets/p2-storyboard.jpg" alt="Excerpt from the real storyboard: the XLOOKUP topic's I Do demonstration script and formula" style="width:100%;height:auto;border-radius:2px;border:1px solid var(--line)"></div>
+      </li>
+      <li class="step">
+        <div>
+          <div class="step-no" aria-hidden="true">3</div>
+          <h3>Build assessments that test transfer</h3>
+          <p>The pre-assessment checks where learners start: can they pull a single value with a lookup formula, count and sum by a simple condition, build a basic pivot table. The post-assessment doesn't repeat those questions. It asks learners to handle a lookup that should fail gracefully, combine two conditions in one formula, write a plain-English conclusion a director could read, and decide what three things they'd check before trusting a new batch of data.</p>
+          <p style="margin-top:12px">The gap between the two is deliberate: the pre-assessment tests recall, the post-assessment tests judgment. Getting the right number is only half of the final two questions on the post-assessment &mdash; the other half is explaining why it matters or what you'd watch for, which is the part a formula alone can't teach.</p>
+        </div>
+        <div><img src="assets/p2-assessment.jpg" alt="Comparison of a pre-assessment recall question and a post-assessment transfer question from the real assessment workbooks" style="width:100%;height:auto;border-radius:2px;border:1px solid var(--line)"></div>
+      </li>
+      <li class="step" style="grid-template-columns:1fr">
+        <div>
+          <div class="step-no" aria-hidden="true">4</div>
+          <h3>Facilitate and evaluate</h3>
+          <p>Delivered live over MS Teams, following the same I Do &rarr; We Do &rarr; You Do structure through all six topics, with volunteers screen-sharing their work for group feedback. Evaluated two ways: a post-training satisfaction survey, and a comparison of pre- and post-assessment scores to check actual skill gain, not just reaction.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section bg-white" aria-labelledby="results-h">
+  <div class="container prose">
+    <h2 id="results-h">Results and takeaways</h2>
+    <div>
+      <p class="lede" style="color:var(--navy);font-weight:600;max-width:52ch">Evaluated through a post-training satisfaction survey and a pre- vs post-assessment comparison, to check real skill gain rather than just reaction.</p>
+      <ul class="takeaways">
+        <li>Building every exercise on one real, linked dataset instead of disconnected examples meant XLOOKUP had an actual job to do in the room, not just a syntax to memorize.</li>
+        <li>Writing the post-assessment to require a written conclusion, not just a correct formula, meant the assessment measured whether someone could hand off an answer a manager would trust &mdash; not just whether they could reproduce a formula.</li>
+        <li>Comparing pre- and post-assessment scores, rather than relying on satisfaction alone, was the point: it separates learners who enjoyed the session from learners who can actually do the work differently now.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-navy cta" id="contact">
+  <div class="container">
+    <h2>Need something like this for your team?</h2>
+    <p class="lede">Tell me who the learners are and what's getting in their way, and I'll reply with how I'd approach it.</p>
+    <div class="btn-row">
+      <a class="btn btn-light" href="contact.html">Contact me</a>
+      <a class="btn btn-ghost-light" href="work.html">Back to all work</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot">
+      <div>
+        <a class="wordmark" href="index.html" aria-label="Zeina Abualkasem, home">Zeina Abualkasem</a>
+        <p style="margin-top:14px;color:var(--baby-soft);max-width:34ch">Instructional designer and L&amp;D specialist.</p>
+      </div>
+      <nav aria-label="Footer">
+        <h2>Pages</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="work.html">Work</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Get in touch</h2>
+        <ul>
+          <li><a href="mailto:sherifzeina@yahoo.com" target="_blank" rel="noopener">sherifzeina@yahoo.com</a></li>
+          <li><a href="https://www.linkedin.com/in/zeina-abualkasem-36427b258" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">&copy; 2026 Zeina Abualkasem. Company and client details are removed from all work samples.</p>
+  </div>
+</footer>
+</div>
+<script>
+(function(){
+  // Mobile menu
+  var t=document.querySelector('.menu-toggle'), nav=document.getElementById('site-nav');
+  if(t&&nav){
+    function set(o){t.setAttribute('aria-expanded',o?'true':'false');nav.classList.toggle('open',o);t.querySelector('.sr').textContent=o?'Close menu':'Open menu';}
+    t.addEventListener('click',function(){set(t.getAttribute('aria-expanded')!=='true');});
+    nav.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&t.getAttribute('aria-expanded')==='true'){set(false);t.focus();}});
+    window.addEventListener('resize',function(){if(window.innerWidth>820)set(false);});
+  }
+})();
+</script>
+</body>
+</html>
